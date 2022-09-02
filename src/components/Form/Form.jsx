@@ -68,12 +68,10 @@ const Form = () => {
       <Filter filter={filter} handleChange={handleChange} />
       {loading && <p>...Loading</p>}
       {error && <p>Error while fetching</p>}
-      {!error && items.lenght > 0 && (
-        <ContactList
-          contacts={filteredContacts}
-          onRemoveContacts={onRemoveContacts}
-        />
-      )}
+      <ContactList
+        contacts={filteredContacts}
+        onRemoveContacts={onRemoveContacts}
+      />
     </div>
   );
 };
