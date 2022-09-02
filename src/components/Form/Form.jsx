@@ -1,37 +1,40 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import ContactForm from './ContactForm';
 import Filter from './Filter';
 import ContactList from './ContactList';
 
-import {
-  addContact,
-  removeContact,
-} from '../../redux/contacts/contact-actions';
 import { getContacts } from 'redux/contacts/contact-selector';
+import {
+  fetchContacts,
+  deleteContacts,
+  addContactsFetch,
+} from '../../redux/contacts/contact-operations';
 
 import styles from './form.module.css';
 
 const Form = () => {
-  const contacts = useSelector(getContacts);
+  const { items, loading, error } = useSelector(getContacts);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   const onAddContacts = data => {
-    const resultNumber = contacts.find(
-      contact => contact.number === data.number
-    );
+    const resultNumber = items.find(contact => contact.number === data.number);
     if (resultNumber) {
       return alert(`${data.name} уже есть в списке`);
     }
 
-    const action = addContact(data);
+    const action = addContactsFetch(data);
 
     dispatch(action);
   };
 
   const onRemoveContacts = id => {
-    const action = removeContact(id);
+    const action = deleteContacts(id);
     dispatch(action);
   };
 
@@ -44,10 +47,10 @@ const Form = () => {
 
   const getFilteredContacts = () => {
     if (!filter) {
-      return contacts;
+      return items;
     }
     const filterStr = filter.toLowerCase();
-    const result = contacts.filter(contact => {
+    const result = items.filter(contact => {
       const name = contact.name.toLowerCase();
       return name.includes(filterStr);
     });
@@ -57,19 +60,20 @@ const Form = () => {
 
   const filteredContacts = getFilteredContacts();
 
-  console.log(contacts);
-
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Phonebook</h1>
       <ContactForm onSubmit={onAddContacts} />
       <h2 className={styles.title}>Contacts</h2>
       <Filter filter={filter} handleChange={handleChange} />
-      {/* <ContactList removeContact={removeContact} contacts={filteredContacts} /> */}
-      <ContactList
-        contacts={filteredContacts}
-        removeContact={onRemoveContacts}
-      />
+      {loading && <p>...Loading</p>}
+      {error && <p>Error while fetching</p>}
+      {!error && items.length > 0 && (
+        <ContactList
+          contacts={filteredContacts}
+          onRemoveContacts={onRemoveContacts}
+        />
+      )}
     </div>
   );
 };
