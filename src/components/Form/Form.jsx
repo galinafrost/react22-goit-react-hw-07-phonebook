@@ -68,7 +68,7 @@ const Form = () => {
       <Filter filter={filter} handleChange={handleChange} />
       {loading && <p>...Loading</p>}
       {error && <p>Error while fetching</p>}
-      {!error && items.length > 0 && (
+      {!error && items.lenght > 0 && (
         <ContactList
           contacts={filteredContacts}
           onRemoveContacts={onRemoveContacts}
