@@ -1,1 +1,1 @@
-export const getContacts = store => store.contactReducer.contacts
+export const getContacts = store => store.contacts;

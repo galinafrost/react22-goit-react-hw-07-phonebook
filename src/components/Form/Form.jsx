@@ -23,7 +23,7 @@ const Form = () => {
   }, [dispatch]);
 
   const onAddContacts = data => {
-    const resultNumber = items.find(contact => contact.phone === data.phone);
+    const resultNumber = items.find(contact => contact.number === data.number);
     if (resultNumber) {
       return alert(`${data.name} уже есть в списке`);
     }
